@@ -41,19 +41,6 @@ resource "aws_security_group" "oneinfra" {
   }
 }
 
-# a variable that stores the port number
-
-variable "server_port" {
-  description = "The port the server will use for HTTP requests"
-  type = number
-}
-
-# output variable for the public ip address
-output "alb_dns_name" {
-  value = aws_lb.oneinfra.dns_name
-  description = "The domain name of the load balancer"
-}
-
 
 # Auto scaling group
 
@@ -181,4 +168,14 @@ resource "aws_lb_listener_rule" "asg" {
     }
 
 }
+}
+
+terraform {
+    backend "s3" {
+    key = "stage/services/webserver-cluster/terraform.tfstate"
+    bucket = "amfilling"
+    region = "us-east-2"
+    dynamodb_table = "filling-up-locks"
+    encrypt = true
+    }
 }
